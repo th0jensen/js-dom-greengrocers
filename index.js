@@ -1,4 +1,4 @@
-const state = {
+export const state = {
     items: [
         {
             id: '001-beetroot',
@@ -120,7 +120,7 @@ function removeButton(cart) {
             cart.quantity -= 1
             console.log(`INFO: ${cart.name} quantity decreased by one`)
         } else {
-            for (i = 0; i < state.cart.length; i++) {
+            for (let i = 0; i < state.cart.length; i++) {
                 if (state.cart[i].name === cart.name) {
                     state.cart.splice(i, 1)
                     break
@@ -136,7 +136,7 @@ function removeButton(cart) {
 // TODO (#6): Do the maths for the cart
 function calculateTotalAmount() {
     let totalAmount = 0
-    for (i = 0; i < state.cart.length; i++) {
+    for (let i = 0; i < state.cart.length; i++) {
         const cartItem = state.cart[i]
         totalAmount += cartItem.price * cartItem.quantity
         console.log(`INFO: Total amount: ${totalAmount}`)
@@ -149,7 +149,7 @@ function renderCart() {
     const cartItemList = document.querySelector('.cart--item-list')
     cartItemList.innerHTML = ''
 
-    for (i = 0; i < state.cart.length; i++) {
+    for (let i = 0; i < state.cart.length; i++) {
         const cart = state.cart[i]
         const cartItem = document.createElement('li')
 
@@ -215,9 +215,15 @@ function createFilter() {
         render()
     })
 
-    const addButton = document.createElement('button')
+    const addNewItemButton = document.createElement('button')
+    addNewItemButton.innerText = 'Add a new item'
+    addNewItemButton.addEventListener('click', () => {
+        window.location.assign('/create')
+    })
+
     filterContainer.appendChild(filterButton)
     filterContainer.appendChild(sortButton)
+    filterContainer.appendChild(addNewItemButton)
     return filterContainer
 }
 
@@ -243,7 +249,7 @@ function render() {
         filteredItems = filteredItems.sort((a, b) => a.id.localeCompare(b.id))
     }
 
-    for (i = 0; i < filteredItems.length; i++) {
+    for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i]
         const listItem = document.createElement('li')
 
