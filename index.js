@@ -4,54 +4,65 @@ const state = {
             id: '001-beetroot',
             name: 'beetroot',
             price: 0.35,
+            kind: 'Vegetable',
         },
         {
             id: '002-carrot',
             name: 'carrot',
             price: 0.35,
+            kind: 'Vegetable',
         },
         {
             id: '003-apple',
             name: 'apple',
             price: 0.35,
+            kind: 'Fruit',
         },
         {
             id: '004-apricot',
             name: 'apricot',
             price: 0.35,
+            kind: 'Fruit',
         },
         {
             id: '005-avocado',
             name: 'avocado',
             price: 0.35,
+            kind: 'Vegetable',
         },
         {
             id: '006-bananas',
             name: 'bananas',
             price: 0.35,
+            kind: 'Fruit',
         },
         {
             id: '007-bell-pepper',
             name: 'bell pepper',
             price: 0.35,
+            kind: 'Vegetable',
         },
         {
             id: '008-berry',
             name: 'berry',
             price: 0.35,
+            kind: 'Berry',
         },
         {
             id: '009-blueberry',
             name: 'blueberry',
             price: 0.35,
+            kind: 'Berry',
         },
         {
             id: '010-eggplant',
             name: 'eggplant',
             price: 0.35,
+            kind: 'Vegetable',
         },
     ],
     cart: [],
+    filterVariable: null,
 }
 
 function createItemImage(item) {
@@ -158,13 +169,51 @@ function renderCart() {
     totalAmount.innerText = `£${calculateTotalAmount()}`
 }
 
+// TODO (#7): Add filter buttons to the top of the screen
+function createFilter() {
+    const filterContainer = document.createElement('div')
+    const filterButton = document.createElement('button')
+    filterButton.innerText = 'No filter'
+    filterButton.addEventListener('click', () => {
+        switch (state.filterVariable) {
+            case 'Fruit':
+                state.filterVariable = 'Berry'
+                filterButton.innerText = 'Berry filter'
+                break
+            case 'Berry':
+                state.filterVariable = 'Vegetable'
+                filterButton.innerText = 'Vegetable filter'
+                break
+            case 'Vegetable':
+                state.filterVariable = null
+                filterButton.innerText = 'No filter'
+                break
+            default:
+                state.filterVariable = 'Fruit'
+                filterButton.innerText = 'Fruit filter'
+        }
+        render()
+    })
+    filterContainer.appendChild(filterButton)
+    return filterContainer
+}
+
 // TODO (#1): Render the initial state
 function render() {
     const storeItemList = document.querySelector('.store--item-list')
     storeItemList.innerHTML = ''
 
-    for (i = 0; i < state.items.length; i++) {
-        const item = state.items[i]
+    let filteredItems
+    if (state.filterVariable != null) {
+        filteredItems = state.items.filter(
+            (item) => item.kind === state.filterVariable
+        )
+    } else {
+        filteredItems = state.items
+    }
+
+    for (i = 0; i < filteredItems.length; i++) {
+        const item = filteredItems[i]
         const listItem = document.createElement('li')
         listItem.appendChild(createItemImage(item))
         listItem.appendChild(createAddToCartButton(item, state.cart))
@@ -174,6 +223,8 @@ function render() {
 
 // TODO (#2): Load the initial state
 document.addEventListener('DOMContentLoaded', () => {
+    const storeItemList = document.querySelector('.store--item-list')
+    storeItemList.before(createFilter(), storeItemList)
     render()
     renderCart()
 })
