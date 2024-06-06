@@ -62,6 +62,7 @@ const state = {
         },
     ],
     cart: [],
+    sorted: false,
     filterVariable: null,
 }
 
@@ -169,6 +170,7 @@ function renderCart() {
     totalAmount.innerText = `£${calculateTotalAmount()}`
 }
 
+// TODO (#8): Add sort functionality
 // TODO (#7): Add filter buttons to the top of the screen
 function createFilter() {
     const filterContainer = document.createElement('div')
@@ -194,7 +196,21 @@ function createFilter() {
         }
         render()
     })
+
+    const sortButton = document.createElement('button')
+    sortButton.innerText = 'Not sorted'
+    sortButton.addEventListener('click', () => {
+        if (!state.sorted) {
+            state.sorted = true
+            sortButton.innerText = 'Sorted'
+        } else {
+            state.sorted = false
+            sortButton.innerText = 'Not sorted'
+        }
+        render()
+    })
     filterContainer.appendChild(filterButton)
+    filterContainer.appendChild(sortButton)
     return filterContainer
 }
 
@@ -212,10 +228,24 @@ function render() {
         filteredItems = state.items
     }
 
+    if (state.sorted) {
+        filteredItems = filteredItems.sort((a, b) => {
+            return a.name.localeCompare(b.name)
+        })
+    } else {
+        filteredItems = filteredItems.sort((a, b) => {
+            return a.id.localeCompare(b.id)
+        })
+    }
+
     for (i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i]
         const listItem = document.createElement('li')
+
+        const itemName = document.createElement('p')
+        itemName.innerText = item.name[0].toUpperCase() + item.name.slice(1)
         listItem.appendChild(createItemImage(item))
+        listItem.appendChild(itemName)
         listItem.appendChild(createAddToCartButton(item, state.cart))
         storeItemList.appendChild(listItem)
     }
