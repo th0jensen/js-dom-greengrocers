@@ -120,7 +120,12 @@ function removeButton(cart) {
             cart.quantity -= 1
             console.log(`INFO: ${cart.name} quantity decreased by one`)
         } else {
-            state.cart.splice(cart, 1)
+            for (i = 0; i < state.cart.length; i++) {
+                if (state.cart[i].name === cart.name) {
+                    state.cart.splice(i, 1)
+                    break
+                }
+            }
             console.log(`INFO: ${cart.name} removed from cart`)
         }
         renderCart()
@@ -209,6 +214,8 @@ function createFilter() {
         }
         render()
     })
+
+    const addButton = document.createElement('button')
     filterContainer.appendChild(filterButton)
     filterContainer.appendChild(sortButton)
     return filterContainer
@@ -229,13 +236,11 @@ function render() {
     }
 
     if (state.sorted) {
-        filteredItems = filteredItems.sort((a, b) => {
-            return a.name.localeCompare(b.name)
-        })
+        filteredItems = filteredItems.sort((a, b) =>
+            a.name.localeCompare(b.name)
+        )
     } else {
-        filteredItems = filteredItems.sort((a, b) => {
-            return a.id.localeCompare(b.id)
-        })
+        filteredItems = filteredItems.sort((a, b) => a.id.localeCompare(b.id))
     }
 
     for (i = 0; i < filteredItems.length; i++) {
